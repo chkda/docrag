@@ -48,15 +48,13 @@ class Extractor:
             for page_idx in range(start_page, end_page):
                 if page_idx < len(self.doc):
                     page = self.doc[page_idx]
-                    section_text += page.get_text()
+                    section_text = page.get_text()
 
-            yield {
-                "section_title": title,
-                "level": level,
-                "start_page": start_page + 1,
-                "end_page": end_page,
-                "text": section_text
-            }
+                    yield {
+                        "section_title": title,
+                        "page_number": page_idx,
+                        "text": section_text
+                    }
 
     def close(self):
         self.doc.close()
