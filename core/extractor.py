@@ -44,7 +44,6 @@ class Extractor:
             else:
                 end_page = len(self.doc)
 
-            section_text = ""
             for page_idx in range(start_page, end_page):
                 if page_idx < len(self.doc):
                     page = self.doc[page_idx]
