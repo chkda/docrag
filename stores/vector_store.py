@@ -1,7 +1,5 @@
 from functools import lru_cache
 
-from qdrant_client.http.models import QueryResponse
-
 from stores.qdrant.qdrant_store import QdrantStore
 
 
@@ -21,12 +19,12 @@ class VectorStore:
     def insert(self, points):
         self.store.add(points)
 
-    def retrieve(self, query_vector, limit: int = 10, query_filter=None, score_threshold: float = None):
+    def retrieve(self, query_vector, car, limit: int = 10,  score_threshold: float = None):
         return self.store.search(
             query_vector=query_vector,
             limit=limit,
-            query_filter=query_filter,
             score_threshold=score_threshold,
+            car=car,
         )
 
 @lru_cache

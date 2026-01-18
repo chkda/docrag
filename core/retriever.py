@@ -7,7 +7,7 @@ class Retriever:
         self.vector_store = vector_store
         self.embedding_generator = embedding_generator
 
-    def search(self, query: str):
+    def search(self, query: str, car: str) :
         query_embedding = self.embedding_generator.embed(query)
-        results = self.vector_store.retrieve(query_vector=query_embedding, limit=5)
+        results = self.vector_store.retrieve(query_vector=query_embedding, limit=3, car=car)
         return results

@@ -69,7 +69,7 @@ def search(request: SearchRequest):
 
     if car == "":
         return SearchResponse(answer="Manual is not available for this car/model.", citations=[])
-    results = retriever.search(request.query)
+    results = retriever.search(request.query, car)
     citations = []
     chunks = []
 

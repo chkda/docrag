@@ -6,7 +6,11 @@ from qdrant_client.models import (
     HnswConfigDiff,
     PointStruct,
     Filter,
+    FieldCondition,
+    MatchValue,
+    SearchParams,
 )
+
 
 
 class QdrantStore:
@@ -64,13 +68,25 @@ class QdrantStore:
         self,
         query_vector: list[float],
         limit: int = 10,
-        query_filter: Filter = None,
         score_threshold: float = None,
+        car: str = None,
     ):
+        query_filter = None
+        if car:
+            query_filter = Filter(
+                must=[
+                    FieldCondition(
+                        key="car",
+                        match=MatchValue(value=car)
+                    )
+                ]
+            )
+
         return self.client.query_points(
             collection_name=self.collection_name,
             query=query_vector,
             limit=limit,
             query_filter=query_filter,
             score_threshold=score_threshold,
+            search_params=SearchParams(hnsw_ef=128, exact=False),
         )

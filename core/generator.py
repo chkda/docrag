@@ -1,13 +1,13 @@
 from torch.fx.experimental.symbolic_shapes import lru_cache
 
-from core.llm import SmolLLM
+from core.llm import TransformersLLM
 
 from typing import Any, Dict, List
 
 class Generator:
 
     def __init__(self, device:str="cpu"):
-        self.llm = SmolLLM(device=device)
+        self.llm = TransformersLLM(device=device)
 
     def build_prompt(
             self,
