@@ -1,7 +1,7 @@
 import uuid
 from qdrant_client.models import PointStruct
 
-from core import EmbeddingGenerator
+from core.embedding_generator import EmbeddingGenerator
 from stores.vector_store import VectorStore
 
 

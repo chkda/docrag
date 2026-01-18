@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 from stores.qdrant.qdrant_store import QdrantStore
 
 
@@ -24,3 +26,7 @@ class VectorStore:
             query_filter=query_filter,
             score_threshold=score_threshold,
         )
+
+@lru_cache
+def get_vector_store(db_type: str, collection_name: str, **connection_config)->VectorStore:
+    return VectorStore(db_type, collection_name, **connection_config)

@@ -2,7 +2,12 @@ import fitz
 
 
 class Extractor:
-    def __init__(self, document_path: str, mode: str = "page"):
+    def __init__(self, document_path: str = None, mode: str = "page"):
+        self.document_path = document_path
+        self.mode = mode
+        self.doc = fitz.open(document_path) if document_path else None
+
+    def set_doc(self, document_path: str, mode: str = "page"):
         self.document_path = document_path
         self.mode = mode
         self.doc = fitz.open(document_path)
@@ -55,9 +60,3 @@ class Extractor:
 
     def close(self):
         self.doc.close()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()

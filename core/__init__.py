@@ -1,5 +1,6 @@
 from .extractor import Extractor
 from .indexer import Indexer
 from .embedding_generator import EmbeddingGenerator
+from .ingestor import Ingestor
 
-__all__ = ["Extractor", "Indexer", "EmbeddingGenerator"]
+__all__ = ["Ingestor"]
