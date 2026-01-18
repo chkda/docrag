@@ -19,7 +19,7 @@ class Ingestor:
             embedding_generator=embedding_generator
         )
 
-    def index(self, document_path: str, mode: str = "page"):
+    def index(self,car: str, document_path: str, mode: str = "page"):
         self.extractor.set_doc(document_path=document_path, mode=mode)
         document_name = document_path.split("/")[-1]
 
@@ -28,6 +28,7 @@ class Ingestor:
 
             metadata = {
                 "document_name": document_name,
+                "car": car,
                 **chunk
             }
             del metadata["text"]

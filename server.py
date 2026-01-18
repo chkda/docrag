@@ -1,10 +1,11 @@
-from typing import List
+from typing import List, Optional
 
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
 
 from core import Retriever
+from core.generator import get_generator
 from core.embedding_generator import get_embedding_generator
 from stores.vector_store import get_vector_store
 
@@ -14,6 +15,11 @@ QDRANT_PORT = 6333
 COLLECTION_NAME = "documents"
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 EMBEDDING_DIM = 384
+
+cars = {
+    "astor": {"mg astor", "astor", "mgastor"},
+    "tiago": {"tata tiago", "tiago", "tatatiago"},
+}
 
 app = FastAPI()
 
@@ -35,6 +41,8 @@ retriever = Retriever(
     embedding_generator=embedding_generator
 )
 
+generator = get_generator("cpu")
+
 
 class SearchRequest(BaseModel):
     query: str
@@ -46,19 +54,34 @@ class Citation(BaseModel):
 
 class SearchResponse(BaseModel):
     answer: str
-    citations: List[Citation]
+    citations: Optional[List[Citation]] = None
 
 
 @app.post("/search")
 def search(request: SearchRequest):
+    request.query = request.query.lower()
+    car = ""
+    for car_name, possible_names in cars.items():
+        for name in possible_names:
+            if name in request.query:
+                car = car_name
+                break
+
+    if car == "":
+        return SearchResponse(answer="Manual is not available for this car/model.", citations=[])
     results = retriever.search(request.query)
     citations = []
+    chunks = []
+
     for result in results.points:
         result = result.payload
-        print(result)
-        citations.append(Citation(text=result["text"], document_name=result["document_name"], page_number=result["page_number"] if "page_number" in result else result["start_page"]))
+        citation = Citation(text=result["text"], document_name=result["document_name"], page_number=result["page_number"] if "page_number" in result else result["start_page"])
+        citations.append(citation)
+        chunks.append(citation.model_dump())
 
-    return SearchResponse(answer="This is the answer", citations=citations)
+    answer = generator.generate_answer(query=request.query, chunks=chunks, car_model=car)
+
+    return SearchResponse(answer=answer, citations=citations)
 
 
 if __name__ == "__main__":

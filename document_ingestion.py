@@ -4,8 +4,8 @@ from stores.vector_store import get_vector_store
 
 
 DOCUMENT_PATHS = [
-    "documents/APP-TIAGO-FINAL-OMSB.pdf",
-    "documents/Astor-Manual.pdf",
+    ("tiago","documents/APP-TIAGO-FINAL-OMSB.pdf"),
+    ("astor","documents/Astor-Manual.pdf"),
 ]
 
 QDRANT_URL = "localhost"
@@ -34,8 +34,10 @@ def ingest_documents():
         embedding_generator=embedding_generator
     )
 
-    for document_path in DOCUMENT_PATHS:
-        ingestor.index(document_path=document_path, mode="section")
+    for document in DOCUMENT_PATHS:
+        car = document[0]
+        document_path = document[1]
+        ingestor.index(car=car,document_path=document_path, mode="section")
 
 
 if __name__ == "__main__":
