@@ -1,3 +1,5 @@
+from typing import List
+
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -37,11 +39,26 @@ retriever = Retriever(
 class SearchRequest(BaseModel):
     query: str
 
+class Citation(BaseModel):
+    document_name: str
+    page_number: int
+    text: str
+
+class SearchResponse(BaseModel):
+    answer: str
+    citations: List[Citation]
+
 
 @app.post("/search")
 def search(request: SearchRequest):
     results = retriever.search(request.query)
-    return {"results": results}
+    citations = []
+    for result in results.points:
+        result = result.payload
+        print(result)
+        citations.append(Citation(text=result["text"], document_name=result["document_name"], page_number=result["page_number"] if "page_number" in result else result["start_page"]))
+
+    return SearchResponse(answer="This is the answer", citations=citations)
 
 
 if __name__ == "__main__":

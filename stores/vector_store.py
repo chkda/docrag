@@ -1,5 +1,7 @@
 from functools import lru_cache
 
+from qdrant_client.http.models import QueryResponse
+
 from stores.qdrant.qdrant_store import QdrantStore
 
 
