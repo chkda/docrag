@@ -68,7 +68,7 @@ class QdrantStore:
     ):
         return self.client.query_points(
             collection_name=self.collection_name,
-            query_vector=query_vector,
+            query=query_vector,
             limit=limit,
             query_filter=query_filter,
             score_threshold=score_threshold,
